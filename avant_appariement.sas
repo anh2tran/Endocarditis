@@ -1,4 +1,5 @@
-/*PROGRAMS USED TO PREPARE DATASETS BEFORE IMPORTING INTO R FOR MATCHING PROCESS
+/*PROGRAMS USED TO PREPARE DATASETS BEFORE IMPORTING INTO R FOR MATCHING PROCESS, 
+CREATE TOP STRATEGY 3 - EXCLUDE PATIENTS EXPOSED TO OTHER RISK FACTORS BEFORE THE INDEX DATE IN EACH EXPOSED GROUP
 You don't need to re-create table app_all_groups by these codes. I did save a table in ENDOCARDITE/ANH/cohort_july/app_all_groups.sas*/
 data test_pop_general;
 	set cohort.pop_general;
@@ -221,6 +222,7 @@ data set_cied_s1 (keep= ben_idt_ano id date_index_atcd_ei date_index_pv date_ind
 	where top_cied = 1;
 	run;
 
+/*creer top pour strategie 3*/
 data set_atcd_s3;
 	set set_atcd_s1;
 	top_atcd_s3 =1 ;
