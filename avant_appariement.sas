@@ -1,3 +1,5 @@
+/*PROGRAMS USED TO PREPARE DATASETS BEFORE IMPORTING INTO R FOR MATCHING PROCESS
+You don't need to re-create table app_all_groups by these codes. I did save a table in ENDOCARDITE/ANH/cohort_july/app_all_groups.sas*/
 data test_pop_general;
 	set cohort.pop_general;
 	ben_nai_ann_num = input(ben_nai_ann, 8.);
