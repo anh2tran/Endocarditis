@@ -152,8 +152,8 @@ data tab_non_expose;
 	where exposure_&groupe. = 0;
 	run;
 
-%definir_evt(cohort=tab_expose);
-%definir_evt(cohort=tab_non_expose);
+%definir_evt(cohort=tab_expose, groupe=&groupe.);
+%definir_evt(cohort=tab_non_expose, groupe=&groupe.);
 
 proc sort data=tab_expose; by strata_&groupe.; run;
 proc sort data=tab_strat_0; by strata_&groupe.; run;
@@ -379,8 +379,8 @@ data tab_non_expose;
 	where exposure_&groupe. = 0;
 	run;
 
-%definir_evt(cohort=tab_expose);
-%definir_evt(cohort=tab_non_expose);
+%definir_evt(cohort=tab_expose, groupe=&groupe.);
+%definir_evt(cohort=tab_non_expose, groupe=&groupe.);
 
 proc sort data=tab_expose; by strata_&groupe.; run;
 proc sort data=tab_strat_0; by strata_&groupe.; run;
