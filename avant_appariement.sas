@@ -14,7 +14,7 @@ and TOP_JUMEAUX_MEME_SEXE = 0;
 DATA cohort.pop_general_app;
 SET cohort.pop_general_app;
 if region = "32- Hauts de France" then region_code = 1;
-if region = "84-Auvergne-Rhône Alpes" then region_code = 2;
+if region = "84-Auvergne-RhÃ´ne Alpes" then region_code = 2;
 if region = "93-Provence Alpes Cote d'Azur" then region_code = 3;
 if region = "44-Grand Est" then region_code = 4;
 if region = "76-Occitanie" then region_code = 5;
@@ -22,7 +22,7 @@ if region = "28- Normandie" then region_code = 6;
 if region = "75-Nouvelle Aquitaine" then region_code = 7;
 if region = "24-Centre-Val de Loire" then region_code = 8;
 if region = "94-Corse" then region_code = 9;
-if region = "27- Bourgogne Franche Comté" then region_code = 10;
+if region = "27- Bourgogne Franche ComtÃ©" then region_code = 10;
 if region = "53-Bretagne" then region_code = 11;
 if region = "52-Pays de Loire" then region_code = 12;
 if region = "11-Ile de France" then region_code = 13;
@@ -36,7 +36,7 @@ create table set1 as select distinct
 ben_idt_ano,
 date_index as date_index_atcd_ei,
 1 as top_ATCD_EI
-from cohort.atcd_ei_juin;
+from clean.groupe_atcd_ei_jul;
 quit;
 
 proc sql;
@@ -44,7 +44,7 @@ create table set2 as select distinct
 ben_idt_ano,
 date_index as date_index_PV,
 1 as top_PV
-from clean.cohorte_pv_evt_july;
+from clean.groupe_pv_jul;
 quit;
 
 proc sql;
@@ -52,7 +52,7 @@ create table set3 as select distinct
 ben_idt_ano,
 date_index as date_index_MCM,
 1 as top_MCM
-from clean.cohorte_mcm_evt;
+from clean.groupe_mcm_jul;
 quit;
 
 proc sql;
@@ -60,7 +60,7 @@ create table set4 as select distinct
 ben_idt_ano,
 date_index as date_index_CIED,
 1 as top_CIED
-from clean.cohorte_cied_evt_july;
+from clean.groupe_cied_jul;
 quit;
 
 
@@ -119,7 +119,7 @@ ben_dcd_dte date_deces_pmsi max_exe_soi_dtf_all);
 
 data cohort.app_all_groups;
 	set cohort.app_all_groups;
-	id = _N_;
+	id = _N_; /*il faut utiliser id pour importer la table dans R*/
 	run;
 
 
@@ -270,8 +270,9 @@ data clean.cohorte_risque_1007; /*j'ai fait petit a petit pour assurer tout est 
 	set base4;
 	run;
 
+/*importer la table pour les analyses sous-groupes*/
 data chunk_data_ccam (keep=id ben_sex_cod region_code ben_nai_ann_num date_index_ccam_cied date_index_ccam_pv date_deces_dcir_pmsi);
-	set cohort.app_all_groups;
+	set cohort.app_all_groups; 
 	run;
 
 %data_chunk_cut(data_source = chunk_data_ccam, group=all);
