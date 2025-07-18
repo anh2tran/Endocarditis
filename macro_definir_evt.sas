@@ -1,4 +1,4 @@
-%macro definir_evt(cohort=);
+%macro definir_evt(cohort=, groupe=); /*cohort = cohorte d'entree, groupe= groupe concerne, date d'appariement sous le format dom_&groupe.*/
 proc sql;
 create table tab_EI_event as select distinct
 a.*
