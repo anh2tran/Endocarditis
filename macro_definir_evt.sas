@@ -2,7 +2,7 @@
 proc sql;
 create table tab_EI_event as select distinct
 a.*
-from cohort.tab_DPDR_EI a, &cohort. b
+from cohort.tab_DPDR_EI a, &cohort. b /*cohort.tab_DPDR_EI est une table de sejours avec DPDR EI I330 deja nettoyee dans mon dossier cohort*/
 where a.ben_idt_ano = b.ben_idt_ano and a.fusion_sejour_start > b.dom_&groupe.; /*dom_&groupe. = date index ou date de l'appariement*/
 quit;
 
