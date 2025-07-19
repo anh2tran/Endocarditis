@@ -1,0 +1,91 @@
+library(dplyr)
+library(haven)
+library(data.table)
+
+rm(list=ls())
+gc()
+
+#Load data from SAS to R
+
+num_chunk_non_expose = 72
+
+sample_non_expose = NULL
+
+path_lib = "/sasdata/prd/repepip/data/ETUDES/ANH_EI/chunk_storage"
+
+for (i in 1:num_chunk_non_expose) {
+  # Construct the file name
+  chunk_name <- paste0("all_chunk_", i)
+  file_path <- file.path(path_lib, paste0(chunk_name, ".sas7bdat"))
+  
+  sample_middle = read_sas(file_path)
+  sample_middle = as.data.table(sample_middle)
+  
+  # Convert numeric variables to integer
+  numeric_cols <- sapply(sample_middle, is.numeric)  # Identify numeric columns
+  sample_middle[, (names(sample_middle)[numeric_cols]) := lapply(.SD, as.integer), .SDcols = numeric_cols]
+  
+  # Combine the data efficiently
+  if (is.null(sample_non_expose)) {
+    sample_non_expose <- sample_middle
+  } else {
+    sample_non_expose <- rbind(sample_non_expose, sample_middle, use.names = TRUE, fill = TRUE)
+  }
+  
+  # Clear intermediate variable to save memory
+  rm(sample_middle)
+  gc()  # Trigger garbage collection
+}
+
+#force sample as data frame
+sample_non_expose = as.data.frame(sample_non_expose)
+sample_all=sample_non_expose
+rm(sample_non_expose)
+
+sample_all$exposure = ifelse(is.na(sample_all$date_index_CIED), 0, 1)
+
+
+
+#appariement
+matched_set = find_match(d = sample_all,
+                            mvars = c("BEN_SEX_COD", "region_code", "ben_nai_ann_num"),
+                            expovar = "exposure",
+                            death = "date_deces_dcir_pmsi",
+                            idvar= "id",
+                            expodat = "date_index_CIED",
+                            timedep = TRUE,
+                            ttval = 1,
+                            k = 10)
+
+#Strata with ID variable
+matched_set$strata = 1: nrow(matched_set)
+
+set_exposed = matched_set[,c("ttt", "dom", "strata")]
+names(set_exposed)[names(set_exposed) == "ttt"] <- "id"
+set_exposed$exposure = 1
+
+set_non_exposed = NULL
+for (i in 1:10) {
+  control = paste0("ctl", i)
+  set_1 = matched_set[,c(control, "dom", "strata")]
+  names(set_1)[names(set_1) == control] <- "id"
+  set_1$exposure = 0
+  
+if (is.null(set_non_exposed)){
+  set_non_exposed = set_1
+} else{
+  set_non_exposed = bind_rows(set_non_exposed, set_1)
+}
+  rm(set_1)
+  gc()
+}
+
+matched_set_complete = bind_rows(set_exposed, set_non_exposed)
+write.csv(matched_set_complete, "/sasdata/prd/repepip/data/ETUDES/ENDOCARDITE/ANH/matched_cied_1007.csv")
+
+
+
+
+
+
+
