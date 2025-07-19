@@ -60,7 +60,7 @@ data set3_evenement;
 	Endpoint = .;
 	if Evenement = 1 then Endpoint = 1; /*Outcome of interest: new episode of IE*/
 	If deces_avant_fin_etude = 1 then Endpoint = 2; /*Death*/
-	If censure_fin_etude = 1 then Endpoint = 3; /*Censured at the the end of the study*/
+	If censure_fin_etude = 1 then Endpoint = 3; /*Censored at the the end of the study*/
 	run;
 
 data &cohort. (drop=evenement);
