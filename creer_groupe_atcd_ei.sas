@@ -1,7 +1,7 @@
 /*Groupe ATCD d'EI*/
 data data_step1 (keep=ben_idt_ano ben_nir_psa DGN_PAL DGN_REL date_execution
 exe_soi_dtd exe_soi_dtf an_pmsi RSA_NUM ETA_NUM); /*Enlever ben_rng_gem pour éviter les doublons des séjours*/
-	set cohort.conso_pat_endo_cim; /*table source toutes les sejours avec DP/DR EI large liste*/
+	set results.conso_pat_endo_cim; /*table source toutes les sejours avec DP/DR EI large liste*/
 	run;
 
 proc sql;
@@ -27,7 +27,7 @@ quit;
 
 /*Identifier les séjours concernants aux jumeaux même sexe*/
 data tab_jumeaux;
-	set cohort.cohorte_jum_endo_cim;
+	set results.cohorte_jum_endo_cim;
 	top_jumeaux_meme_sexe_sej = 1;
 	run;
 
