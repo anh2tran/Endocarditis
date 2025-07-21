@@ -1,7 +1,7 @@
 /*Groupe ATCD d'EI*/
 data data_step1 (keep=ben_idt_ano ben_nir_psa DGN_PAL DGN_REL date_execution
-exe_soi_dtd exe_soi_dtf an_pmsi RSA_NUM ETA_NUM); /*Enlever ben_rng_gem pour éviter les doublons des séjours*/
-	set results.conso_pat_endo_cim; /*table source toutes les sejours avec DP/DR EI large liste*/
+exe_soi_dtd exe_soi_dtf an_pmsi RSA_NUM ETA_NUM); /*Enlever ben_rng_gem pour Ã©viter les doublons des sÃ©jours*/
+	set cohort.conso_pat_endo_cim; /*table source toutes les sejours avec DP/DR EI large liste*/
 	run;
 
 proc sql;
@@ -9,7 +9,7 @@ proc sql;
 	from data_step1;
 quit;
  
-proc sql; /*Pour occupérer les variables ben_dcd_dte date_deces_pmsi ben_nai_ann*/
+proc sql; /*Pour occupÃ©rer les variables ben_dcd_dte date_deces_pmsi ben_nai_ann*/
    create table data_step2 as 
    select distinct
       a.ben_idt_ano,
@@ -25,9 +25,9 @@ proc sql; /*Pour occupérer les variables ben_dcd_dte date_deces_pmsi ben_nai_ann
       on a.ben_idt_ano = b.ben_idt_ano;
 quit;
 
-/*Identifier les séjours concernants aux jumeaux même sexe*/
+/*Identifier les sÃ©jours concernants aux jumeaux mÃªme sexe*/
 data tab_jumeaux;
-	set results.cohorte_jum_endo_cim;
+	set cohort.cohorte_jum_endo_cim;
 	top_jumeaux_meme_sexe_sej = 1;
 	run;
 
@@ -46,7 +46,7 @@ proc sql;
 	from data_step3; 
 	quit;
 
-/*Enlever les sujets avec les NIR fictif et les séjours concernant les jumeaux même sexe*/
+/*Enlever les sujets avec les NIR fictif et les sÃ©jours concernant les jumeaux mÃªme sexe*/
 data data_step4a; 
 	set data_step3;
 	age_hospit = an_pmsi - ben_nai_ann;
@@ -79,7 +79,7 @@ proc sql;
 	create table work.table_N_3 as select count(distinct ben_idt_ano) as N_pat, "18ans" as step length=32
 	from data_step5; quit;
 
-/*Fusionner les séjours hospitalisers, utilisant ben_idt_ano comme unique identifiant*/
+/*Fusionner les sÃ©jours hospitalisers, utilisant ben_idt_ano comme unique identifiant*/
 proc sort data=data_step5;
 by ben_idt_ano exe_soi_dtd;
 run;
@@ -103,7 +103,7 @@ data data_step6;
 	end;
 	run;
 
-/*table avec les séjours fusionnés avec diagnostiques*/
+/*table avec les sÃ©jours fusionnÃ©s avec diagnostiques*/
 proc sql;
 create table data_step7 as select distinct 
 	ben_idt_ano,
@@ -143,9 +143,9 @@ proc sql;
 	from cohort.sejours_fusion_2904; quit;
 
 /*CHERCHER LES SEJOURS INDEX*/
-/*Premier sejour hospitalier pendant la période 01/01/2010 - 30/06/2023 ( à la base de date_sortie) pour avoir 
-3 mois de grace période et 3 mois du suivi au moins*/
-data data_step8; /*N = 80,361 lignes*/
+/*Premier sejour hospitalier pendant la pÃ©riode 01/01/2010 - 30/06/2023 ( Ã  la base de date_sortie) pour avoir 
+3 mois de grace pÃ©riode et 3 mois du suivi au moins*/
+data data_step8; 
 set cohort.sejours_fusion_2904;
 where fusion_sejour_end <= "30JUN2023"d; /*date sortie sejour index doit etre avant 30 Jun 2023 pour assurer 3 mois du suivi*/
 run;
@@ -167,7 +167,7 @@ proc sql;
 	from tab_vivant;
 	quit;
 
-/*Durée des séjours*/
+/*DurÃ©e des sÃ©jours*/
 data tab_vivant_7jour; 
 	set tab_vivant;
 	where nombre_jour_sejour >=7;
