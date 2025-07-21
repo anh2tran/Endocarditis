@@ -14,6 +14,7 @@ This repository contains the cleaned SAS and R scripts used in the **infective e
   `ENDOCARDITE/ANH/cohort_july/`  
   ---> Please use only the tables from this folder. **Ask before using any others.**
 
+-**2 cohorts that are usually used: app_all_groups for matching and tab_DPDR_EI for identify events, I stock them in `ANH_EI/cohort_stock`
 ---
 
 ## Exposed Risk Groups
